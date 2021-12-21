@@ -99,29 +99,29 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
 
   renderArt () {
     if (this._hasArtData) {
-      return <img draggable="false" class="vpc-spotimbed-art" src={this.state.artData}/>
+      return <img draggable="false" className="vpc-spotimbed-art" src={this.state.artData}/>
     } else if (this.state.fetchingArt) {
       return (
-        <div class="vpc-spotimbed-art vpc-spotimbed-art-loading">
+        <div className="vpc-spotimbed-art vpc-spotimbed-art-loading">
           <Spinner type="spinningCircle"/>
         </div>
       )
     } else {
-      return <svg class="vpc-spotimbed-art vpc-spotimbed-art-default" width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><title>Album</title><path d="M26 0.00100708C11.641 0.00100708 0 11.642 0 26.001C0 40.36 11.641 52.001 26 52.001C40.36 52 52 40.36 52 26C52 11.64 40.36 0.00100708 26 0.00100708ZM26 50C12.767 50 2 39.234 2 26C2 12.766 12.767 2.00001 26 2.00001C39.234 2.00001 50 12.766 50 26C50 39.234 39.234 50 26 50ZM26 18C21.582 18 18 21.582 18 26C18 30.418 21.582 34 26 34C30.418 34 34 30.418 34 26C34 21.582 30.419 18 26 18ZM26 32C22.692 32 20 29.309 20 26C20 22.691 22.692 20 26 20C29.308 20 32 22.691 32 26C32 29.309 29.309 32 26 32Z" fill="currentColor" fill-rule="evenodd"></path></svg>
+      return <svg className="vpc-spotimbed-art vpc-spotimbed-art-default" width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><title>Album</title><path d="M26 0.00100708C11.641 0.00100708 0 11.642 0 26.001C0 40.36 11.641 52.001 26 52.001C40.36 52 52 40.36 52 26C52 11.64 40.36 0.00100708 26 0.00100708ZM26 50C12.767 50 2 39.234 2 26C2 12.766 12.767 2.00001 26 2.00001C39.234 2.00001 50 12.766 50 26C50 39.234 39.234 50 26 50ZM26 18C21.582 18 18 21.582 18 26C18 30.418 21.582 34 26 34C30.418 34 34 30.418 34 26C34 21.582 30.419 18 26 18ZM26 32C22.692 32 20 29.309 20 26C20 22.691 22.692 20 26 20C29.308 20 32 22.691 32 26C32 29.309 29.309 32 26 32Z" fill="currentColor" fill-rule="evenodd"></path></svg>
     }
   }
   renderPlaceholderInfo () {
     return (
-      <div class="vpc-spotimbed-info">
-        <div><span class="vpc-spotimbed-placeholder">movies for guys</span></div>
-        <div><span class="vpc-spotimbed-placeholder">by dltzk</span></div>
-        <div><span class="vpc-spotimbed-placeholder">on Frailty</span></div>
+      <div className="vpc-spotimbed-info">
+        <div><span className="vpc-spotimbed-placeholder">movies for guys</span></div>
+        <div><span className="vpc-spotimbed-placeholder">by dltzk</span></div>
+        <div><span className="vpc-spotimbed-placeholder">on Frailty</span></div>
       </div>
     )
   }
   renderResourceLink (resourceData, className = '') {
     return <a
-      class={['vpc-spotimbed-link'].concat(className.split(' ')).join(' ')}
+      className={['vpc-spotimbed-link'].concat(className.split(' ')).join(' ')}
       href={resourceData.external_urls.spotify}
       data-resource-link={true}
       target="_blank"
@@ -130,7 +130,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
   }
   renderByline (artists) {
     return (
-      <div class="vpc-spotimbed-infoline">
+      <div className="vpc-spotimbed-infoline">
         <span>by </span>
         {this.renderArtists(artists)}
       </div>
@@ -140,7 +140,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
     const artistNames = artists.map(artist => artist.name).join(', ')
     const artistLinks = artists.map(artist => (
       <a
-        class="vpc-spotimbed-link vpc-spotimbed-infoline"
+        className="vpc-spotimbed-link vpc-spotimbed-infoline"
         href={artist.external_urls.spotify}
         target="_blank"
       >{artist.name}</a>
@@ -149,9 +149,9 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
   }
   renderTrackRowInfo (track) {
     return (
-      <div class="vpc-spotimbed-trackrow-info">
+      <div className="vpc-spotimbed-trackrow-info">
         {this.renderResourceLink(track, 'vpc-spotimbed-trackrow-title')}
-        <div class="vpc-spotimbed-trackrow-infoline">{this.renderByline(track.artists)}</div>
+        <div className="vpc-spotimbed-trackrow-infoline">{this.renderByline(track.artists)}</div>
       </div>
     )
   }
@@ -162,7 +162,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       const track = tracks[i]
       tracklistItems.push(
         <div
-          class={toClassName(['vpc-spotimbed-trackrow'], {
+          className={toClassName(['vpc-spotimbed-trackrow'], {
             'vpc-spotimbed-active': i === this.state.selectedTrack
           })}
           onClick={() => {
@@ -170,9 +170,9 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
             this.setState({ selectedTrack: i })
           }}
         >
-          <div class="vpc-spotimbed-trackrow-index vpc-spotimbed-mono">{i + 1}</div>
+          <div className="vpc-spotimbed-trackrow-index vpc-spotimbed-mono">{i + 1}</div>
           {this.renderTrackRowInfo(track)}
-          <div class="vpc-spotimbed-trackrow-length vpc-spotimbed-mono">{formatDuration(track.duration_ms)}</div>
+          <div className="vpc-spotimbed-trackrow-length vpc-spotimbed-mono">{formatDuration(track.duration_ms)}</div>
         </div>
       )
     }
@@ -199,14 +199,14 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         const { resourceData } = this.state
         if (resourceData) {
           info = (
-            <div class="vpc-spotimbed-info">
-              <div class="vpc-spotimbed-titleline">
+            <div className="vpc-spotimbed-info">
+              <div className="vpc-spotimbed-titleline">
                 {this.renderResourceLink(resourceData, 'vpc-spotimbed-title')}
-                <span class="vpc-spotimbed-title-tag vpc-spotimbed-mono">{formatDuration(resourceData.duration_ms)}</span>
+                <span className="vpc-spotimbed-title-tag vpc-spotimbed-mono">{formatDuration(resourceData.duration_ms)}</span>
               </div>
-              <div class="vpc-spotimbed-infoline-wrap">{this.renderByline(resourceData.artists)}</div>
-              <div class="vpc-spotimbed-infoline-wrap">
-                <div class="vpc-spotimbed-infoline">on {this.renderResourceLink(resourceData.album, 'vpc-spotimbed-track-album')}</div>
+              <div className="vpc-spotimbed-infoline-wrap">{this.renderByline(resourceData.artists)}</div>
+              <div className="vpc-spotimbed-infoline-wrap">
+                <div className="vpc-spotimbed-infoline">on {this.renderResourceLink(resourceData.album, 'vpc-spotimbed-track-album')}</div>
               </div>
             </div>
           )
@@ -215,8 +215,8 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         }
 
         return (
-          <div class="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
-            <div class="vpc-spotimbed-art-wrap">
+          <div className="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
+            <div className="vpc-spotimbed-art-wrap">
               {art}
             </div>
             {info}
@@ -246,13 +246,13 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
           }
 
           info = (
-            <div class="vpc-spotimbed-info">
-              <div class="vpc-spotimbed-titleline">
+            <div className="vpc-spotimbed-info">
+              <div className="vpc-spotimbed-titleline">
                 {this.renderResourceLink(resourceData, 'vpc-spotimbed-title')}
-                <span class="vpc-spotimbed-title-tag">{albumType}</span>
+                <span className="vpc-spotimbed-title-tag">{albumType}</span>
               </div>
-              <div class="vpc-spotimbed-infoline-wrap">{this.renderByline(resourceData.artists)}</div>
-              <div class="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">{secondaryInfo}</div>
+              <div className="vpc-spotimbed-infoline-wrap">{this.renderByline(resourceData.artists)}</div>
+              <div className="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">{secondaryInfo}</div>
             </div>
           )
         } else {
@@ -270,18 +270,18 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         }
 
         return (
-          <div class="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
-            <div class="vpc-spotimbed-art-wrap">
+          <div className="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
+            <div className="vpc-spotimbed-art-wrap">
               {art}
             </div>
             {info}
-            <div class={`vpc-spotimbed-content vpc-spotimbed-tracklist ${classNames.thin}`}>{trackListItems}</div>
+            <div className={`vpc-spotimbed-content vpc-spotimbed-tracklist ${classNames.thin}`}>{trackListItems}</div>
             <AudioControls mediaHref={previewUrl} autoPlay={false}/>
           </div>
         )
       }
       default: {
-        return <div class="vpc-spotimbed-unsupported">This Spotify embed is not supported by SpotImbed, please <a href={REPO_ISSUES_URL} target="_blank">open an issue</a> and include the above link</div>
+        return <div className="vpc-spotimbed-unsupported">This Spotify embed is not supported by SpotImbed, please <a href={REPO_ISSUES_URL} target="_blank">open an issue</a> and include the above link</div>
       }
     }
   }

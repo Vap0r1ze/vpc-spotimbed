@@ -48,16 +48,16 @@ module.exports = class AudioControls extends React.PureComponent {
         autoMute={() => {}}
       />
     } else {
-      mediaPlayer = <div class="vpc-spotimbed-placeholder-wrap">
-        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
-        <div class="vpc-spotimbed-placeholder" style={{ width: '66px' }}/>
-        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-scrubber"/>
-        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
+      mediaPlayer = <div className="vpc-spotimbed-placeholder-wrap">
+        <div className="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
+        <div className="vpc-spotimbed-placeholder" style={{ width: '66px' }}/>
+        <div className="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-scrubber"/>
+        <div className="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
       </div>
     }
 
     return (
-      <div class="vpc-spotimbed-controls">
+      <div className="vpc-spotimbed-controls">
         {mediaPlayer}
       </div>
     )

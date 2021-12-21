@@ -7,7 +7,7 @@ const SpotifyAPI = require('./SpotifyAPI.js')
 const Settings = require('./components/Settings.jsx')
 const AltSpotifyEmbed = require('./components/AltSpotifyEmbed.jsx')
 const AudioControls = require('./components/AudioControls.jsx')
-module.exports = class Spotimbed extends Plugin {
+module.exports = class SpotImbed extends Plugin {
   async startPlugin () {
     this.loadStylesheet('style.css')
 
