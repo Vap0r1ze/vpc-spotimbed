@@ -29,12 +29,6 @@
   padding: 20px;
 }
 
-.vpc-spotimbed-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 .vpc-spotimbed-info {
   grid-area: info;
   justify-content: space-evenly;
@@ -43,21 +37,17 @@
   flex-direction: column;
   padding: 6px 10px;
   height: 80px;
+  font-size: 95%;
   overflow: hidden;
 }
 
-.vpc-spotimbed-info > div {
-  font-size: 95%;
-  margin-top: -4px;
-}
 .vpc-spotimbed-embed .vpc-spotimbed-link {
   color: inherit;
 }
 .vpc-spotimbed-embed .vpc-spotimbed-link:hover {
   text-decoration: underline;
 }
-.vpc-spotimbed-embed .vpc-spotimbed-placeholder {
-  animation: 1s ease infinite alternate vpc-placeholder;
+.vpc-spotimbed-info .vpc-spotimbed-placeholder {
   background-color: var(--text-normal);
   border-radius: 9999px;
   color: transparent;
@@ -65,39 +55,96 @@
   padding-right: 100px;
 }
 
-.vpc-spotimbed-trackline {
+.vpc-spotimbed-titleline {
   align-items: center;
-}
-.vpc-spotimbed-track-title {
-  flex: 1;
   font-weight: bold;
+}
+.vpc-spotimbed-title {
+  flex: 1;
   color: var(--vpc-spotimbed-title);
 }
-.vpc-spotimbed-track-length {
+.vpc-spotimbed-mono {
+  font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace;
+}
+.vpc-spotimbed-title-tag {
   background-color: rgba(0, 0, 0, .6);
   border-radius: 4px;
-  font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace;
+  color: rgba(255, 255, 255, .8);
   font-size: 75%;
+  font-weight: 600;
+  text-transform: uppercase;
   margin-left: 16px;
   padding: 3px 6px;
 }
-.vpc-spotimbed-trackline, .vpc-spotimbed-track-artists-wrap, .vpc-spotimbed-track-album-wrap {
+.vpc-spotimbed-titleline, .vpc-spotimbed-infoline-wrap {
   display: flex;
   white-space: pre;
 }
-.vpc-spotimbed-track-title, .vpc-spotimbed-track-artists, .vpc-spotimbed-track-album {
+.vpc-spotimbed-title, .vpc-spotimbed-infoline {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.vpc-spotimbed-infoline-secondary {
+  font-size: 90%;
+}
+
+.vpc-spotimbed-content {
+  grid-area: content;
+  background-color: rgba(0, 0, 0, .2);
+}
+.vpc-spotimbed-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, .2);
+}
+
+.vpc-spotimbed-tracklist {
+  height: 200px;
+  overflow-y: auto;
+}
+.vpc-spotimbed-trackrow {
+  align-items: center;
+  display: flex;
+  height: 40px;
+}
+.vpc-spotimbed-trackrow:hover {
+  background-color: rgba(255, 255, 255, .1);
+}
+.vpc-spotimbed-trackrow.vpc-spotimbed-active {
+  background-color: rgba(255, 255, 255, .3);
+  color: #fff;
+}
+.vpc-spotimbed-trackrow:not(.vpc-spotimbed-active) {
+  cursor: pointer;
+}
+.vpc-spotimbed-trackrow-index {
+  margin: 0 10px;
+  width: 20px;
+  text-align: right;
+}
+.vpc-spotimbed-trackrow-length {
+  margin: 0 16px 0 10px;
+  font-size: 90%;
+}
+.vpc-spotimbed-trackrow-info {
+  flex: 1;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vpc-spotimbed-trackrow-title {
+  font-weight: 600;
+}
+.vpc-spotimbed-trackrow-infoline {
+
 }
 
 .vpc-spotimbed-controls {
   background-color: rgba(0, 0, 0, .6);
   border-radius: 0 0 4px 4px;
+  color: #fff;
   grid-area: controls;
   position: relative;
 }
 .vpc-spotimbed-media-player {
-  color: var(--text-normal);
   position: absolute;
   bottom: 0;
 }
@@ -108,8 +155,47 @@
   background-color: transparent;
   border-radius: 0 0 4px 4px;
 }
+.vpc-spotimbed-controls .vpc-spotimbed-placeholder-wrap {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+.vpc-spotimbed-controls .vpc-spotimbed-placeholder {
+  background: var(--text-normal);
+  border-radius: 9999px;
+  width: 66px;
+  height: 6px;
+  opacity: 1;
+}
+.vpc-spotimbed-controls .vpc-spotimbed-placeholder-scrubber {
+  height: 8px;
+  flex: 1;
+  margin-left: 8px;
+  opacity: 0.5;
+}
+.vpc-spotimbed-controls .vpc-spotimbed-placeholder-btn {
+  width: 16px;
+  height: 16px;
+  margin: 0 8px;
+}
 
-@keyframes vpc-placeholder {
+.vpc-spotimbed-unsupported {
+  background: var(--background-secondary);
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: var(--text-normal);
+  text-align: center;
+  line-height: 125%;
+  user-select: none;
+  padding: 6px 10px;
+  width: 400px;
+}
+
+.vpc-spotimbed-controls .vpc-spotimbed-placeholder-wrap,
+.vpc-spotimbed-info .vpc-spotimbed-placeholder {
+  animation: 1s ease infinite alternate vpc-spotimbed-placeholder;
+}
+@keyframes vpc-spotimbed-placeholder {
   0% { opacity: .1 }
   10% { opacity: .1 }
   100% { opacity: .05 }

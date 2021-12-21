@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { AsyncComponent } = require('powercord/components')
 
 const ReclassedMediaPlayer = AsyncComponent.from(getModuleByDisplayName('MediaPlayer').then(MediaPlayer => {
@@ -28,24 +28,37 @@ module.exports = class AudioControls extends React.PureComponent {
   render () {
     const { mediaHref, autoPlay } = this.props
 
+    let mediaPlayer
+    if (mediaHref) {
+      mediaPlayer = <ReclassedMediaPlayer
+        key={mediaHref}
+        src={mediaHref}
+        type="AUDIO"
+        height={300}
+        width={400}
+        forceExternal={false}
+        autoPlay={autoPlay}
+        playable={true}
+        fileName=""
+        fileSize=""
+        renderLinkComponent={() => <></>}
+        volume={() => this.state.volume}
+        onMute={this.onMute.bind(this)}
+        onVolumeChange={this.onVolumeChange.bind(this)}
+        autoMute={() => {}}
+      />
+    } else {
+      mediaPlayer = <div class="vpc-spotimbed-placeholder-wrap">
+        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
+        <div class="vpc-spotimbed-placeholder" style={{ width: '66px' }}/>
+        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-scrubber"/>
+        <div class="vpc-spotimbed-placeholder vpc-spotimbed-placeholder-btn"/>
+      </div>
+    }
+
     return (
       <div class="vpc-spotimbed-controls">
-        {mediaHref && <ReclassedMediaPlayer
-          src={mediaHref}
-          type="AUDIO"
-          height={300}
-          width={400}
-          forceExternal={false}
-          autoPlay={autoPlay}
-          playable={true}
-          fileName=""
-          fileSize=""
-          renderLinkComponent={() => <></>}
-          volume={() => this.state.volume}
-          onMute={this.onMute.bind(this)}
-          onVolumeChange={this.onVolumeChange.bind(this)}
-          autoMute={() => {}}
-        />}
+        {mediaPlayer}
       </div>
     )
   }

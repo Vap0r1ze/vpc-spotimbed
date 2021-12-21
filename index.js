@@ -1,12 +1,12 @@
 const { Plugin } = require('powercord/entities')
-const { React, getModuleByDisplayName } = require('powercord/webpack')
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack')
 const { inject, uninject } = require('powercord/injector')
 const { getReactInstance } = require('powercord/util')
+const SpotifyAPI = require('./SpotifyAPI.js')
 
 const Settings = require('./components/Settings.jsx')
 const AltSpotifyEmbed = require('./components/AltSpotifyEmbed.jsx')
 const AudioControls = require('./components/AudioControls.jsx')
-
 module.exports = class Spotimbed extends Plugin {
   async startPlugin () {
     this.loadStylesheet('style.css')
@@ -22,8 +22,7 @@ module.exports = class Spotimbed extends Plugin {
       })
     })
 
-    this.spotify = powercord.pluginManager.get('pc-spotify')
-    this.spotifyApi = this.spotify.SpotifyAPI
+    this.spotifyApi = SpotifyAPI
 
     this.ConnectedAltSpotifyEmbed = this.settings.connectStore(AltSpotifyEmbed)
     this.ConnectedAudioControls = this.settings.connectStore(AudioControls)
@@ -38,6 +37,9 @@ module.exports = class Spotimbed extends Plugin {
 
   async patchSpotifyEmbed () {
     const Embed = await getModuleByDisplayName('Embed')
+    const classNames = {
+      ...await getModule([ 'thin' ]),
+    }
 
     inject('vpc-spotimbed-embed', Embed.prototype, 'render', (_, res) => {
       if (res.props.embed?.provider?.name === 'Spotify') {
@@ -45,6 +47,7 @@ module.exports = class Spotimbed extends Plugin {
           embed: res.props.embed,
           spotifyApi: this.spotifyApi,
           AudioControls: this.ConnectedAudioControls,
+          classNames,
         })
       } else {
         return res
@@ -53,20 +56,6 @@ module.exports = class Spotimbed extends Plugin {
 
     this.forceUpdate()
   }
-
-  // injectSpotifyEmbed (args, res) {
-  //   if (!args) return
-  //   const oldRender = res.props.render
-  //   res.props.render = (...renderArgs) => {
-  //     const { lang, content } = args[0]
-
-  //     if (this.skippedLangs[lang]) {
-  //       return oldRender(...renderArgs)
-  //     }
-
-  //     return React.createElement(ShikiHighlighter, {})
-  //   }
-  // }
 
   forceUpdate () {
     document.querySelectorAll('[id^="chat-messages-"]').forEach(e => getReactInstance(e)?.memoizedProps?.onMouseMove?.())
