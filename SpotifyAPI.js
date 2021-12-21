@@ -51,9 +51,6 @@ module.exports = {
           console.error(err.body, request.opts)
           throw err
         }
-      }).then(res => {
-        console.log(res)
-        return res
       })
   },
   getResource (resourcePath) {
