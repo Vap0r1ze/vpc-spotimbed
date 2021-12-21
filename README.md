@@ -1,4 +1,4 @@
-# SpotiMbed
+# SpotiMbed (WIP)
 A powercord plugin for making Spotify embeds actually useable
 
 ### TODO
