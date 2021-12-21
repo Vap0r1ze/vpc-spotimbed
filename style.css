@@ -13,12 +13,13 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  border-radius: 4px 0 0 0;
   height: 80px;
   width: 80px;
+  overflow: hidden;
 }
 
 .vpc-spotimbed-art {
-  border-radius: 4px 0 0 0;
   width: 80px;
 }
 .vpc-spotimbed-art-default {

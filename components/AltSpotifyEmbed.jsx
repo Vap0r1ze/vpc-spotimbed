@@ -2,8 +2,13 @@ const { get } = require('powercord/http')
 const { React } = require('powercord/webpack')
 const { Spinner } = require('powercord/components')
 const Vibrant = require('../vibrant.min.js')
-const { formatOrdinal, getMonth, formatDuration, toClassName } = require('../utils.js')
-const { REPO_ISSUES_URL } = require('../constants.js')
+const {
+  formatOrdinal,
+  getMonth,
+  formatDuration,
+  toClassName,
+} = require('../utils.js')
+const { REPO_ISSUES_URL, SwatchOption } = require('../constants.js')
 
 module.exports = class AltSpotifyEmbed extends React.PureComponent {
   state = {
@@ -26,7 +31,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
     const { getSetting } = this.props
     if (this.state.accentSwatches) return
     if (!this._hasArtData) return
-    if (getSetting('swatch', 'Vibrant') === 'None') return
+    if (getSetting('swatch', SwatchOption.Vibrant) === 'None') return
 
     const swatches = await Vibrant.from(this.state.artData).getSwatches()
     this.setState({ accentSwatches: swatches })
@@ -65,6 +70,17 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       case 'album': {
         return spotifyApi.getAlbum(resourceId).then(resolveResource)
       }
+      case 'artist': {
+        return spotifyApi.getArtist(resourceId).then(artist => {
+          return spotifyApi.getArtistTopTracks(resourceId, 'US').then(topTracks => {
+            console.log(artist, topTracks)
+            return resolveResource({
+              ...artist,
+              top_tracks: topTracks.tracks,
+            })
+          })
+        })
+      }
     }
   }
 
@@ -73,7 +89,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
     let accentBackgroundColor = 'var(--background-secondary)'
     let accentTitleColor = 'var(--text-normal)'
     let accentBodyColor = 'var(--text-normal)'
-    const swatchName = getSetting('swatch', 'Vibrant')
+    const swatchName = getSetting('swatch', SwatchOption.Vibrant)
     if (this.state.accentSwatches && swatchName !== 'None') {
       const swatch = this.state.accentSwatches[swatchName]
       accentBackgroundColor = swatch.hex
@@ -160,6 +176,10 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
 
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i]
+      const columns = []
+      columns.push(<div className="vpc-spotimbed-trackrow-index vpc-spotimbed-mono">{i + 1}</div>)
+      columns.push(this.renderTrackRowInfo(track))
+      columns.push(<div className="vpc-spotimbed-trackrow-length vpc-spotimbed-mono">{formatDuration(track.duration_ms)}</div>)
       tracklistItems.push(
         <div
           className={toClassName(['vpc-spotimbed-trackrow'], {
@@ -170,9 +190,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
             this.setState({ selectedTrack: i })
           }}
         >
-          <div className="vpc-spotimbed-trackrow-index vpc-spotimbed-mono">{i + 1}</div>
-          {this.renderTrackRowInfo(track)}
-          <div className="vpc-spotimbed-trackrow-length vpc-spotimbed-mono">{formatDuration(track.duration_ms)}</div>
+          {columns}
         </div>
       )
     }
@@ -220,7 +238,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
               {art}
             </div>
             {info}
-            <AudioControls mediaHref={this.state.resourceData?.preview_url} autoPlay={false}/>
+            <AudioControls mediaHref={this.state.resourceData?.preview_url}/>
           </div>
         )
       }
@@ -233,6 +251,9 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         const { resourceData } = this.state
 
         let info
+        let trackListItems
+        let previewUrl
+
         if (resourceData) {
           let albumType = 'Album'
           if (resourceData.album_type === 'single') {
@@ -255,18 +276,11 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
               <div className="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">{secondaryInfo}</div>
             </div>
           )
+
+          trackListItems = this.renderTrackList(resourceData.tracks.items)
+          previewUrl = resourceData.tracks.items[this.state.selectedTrack].preview_url
         } else {
           info = this.renderPlaceholderInfo()
-        }
-
-        let trackListItems
-        if (resourceData) {
-          trackListItems = this.renderTrackList(resourceData.tracks.items)
-        }
-
-        let previewUrl
-        if (resourceData) {
-          previewUrl = resourceData.tracks.items[this.state.selectedTrack].preview_url
         }
 
         return (
@@ -276,7 +290,47 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
             </div>
             {info}
             <div className={`vpc-spotimbed-content vpc-spotimbed-tracklist ${classNames.thin}`}>{trackListItems}</div>
-            <AudioControls mediaHref={previewUrl} autoPlay={false}/>
+            <AudioControls mediaHref={previewUrl}/>
+          </div>
+        )
+      }
+      case 'artist': {
+        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchResourceData(resourceType, resourcePath[2])
+
+        const art = this.renderArt()
+
+        const { resourceData } = this.state
+
+        let info
+        let trackListItems
+        let previewUrl
+
+        if (resourceData) {
+
+          info = (
+            <div className="vpc-spotimbed-info">
+              <div className="vpc-spotimbed-titleline">
+                {this.renderResourceLink(resourceData, 'vpc-spotimbed-title')}
+              </div>
+              <div className="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">Top Tracks</div>
+            </div>
+          )
+
+          trackListItems = this.renderTrackList(resourceData.top_tracks)
+          previewUrl = resourceData.top_tracks[this.state.selectedTrack].preview_url
+        } else {
+          info = this.renderPlaceholderInfo()
+        }
+
+        return (
+          <div className="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
+            <div className="vpc-spotimbed-art-wrap">
+              {art}
+            </div>
+            {info}
+            <div className={`vpc-spotimbed-content vpc-spotimbed-tracklist ${classNames.thin}`}>{trackListItems}</div>
+            <AudioControls mediaHref={previewUrl}/>
           </div>
         )
       }

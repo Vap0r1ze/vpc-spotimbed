@@ -26,7 +26,7 @@ module.exports = class AudioControls extends React.PureComponent {
   }
 
   render () {
-    const { mediaHref, autoPlay } = this.props
+    const { mediaHref } = this.props
 
     let mediaPlayer
     if (mediaHref) {
@@ -37,7 +37,7 @@ module.exports = class AudioControls extends React.PureComponent {
         height={300}
         width={400}
         forceExternal={false}
-        autoPlay={autoPlay}
+        autoPlay={false}
         playable={true}
         fileName=""
         fileSize=""

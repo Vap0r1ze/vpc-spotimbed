@@ -4,13 +4,15 @@ A powercord plugin for making Spotify embeds actually useable
 ### TODO
 - ~~Tracks~~
 - ~~Albums~~
-- Artists
+- ~~Artists~~
 - Playlists
 - Users
 - Shows
 - Episodes
-- Fix cut-off descenders
+- Market setting
 - Improve foreground background contrast awareness
+- Fix cut-off descenders
+- Lazy load
 
 ### Showcase
 ![Track Embed](https://i.imgur.com/zDPB8aL.png)

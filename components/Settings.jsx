@@ -1,7 +1,6 @@
 const { React } = require('powercord/webpack')
-const { SelectInput, TextInput, SwitchItem, RadioGroup, SliderInput } = require('powercord/components/settings')
-const { Spinner } = require('powercord/components')
-const { sleep } = require('powercord/util')
+const { SelectInput } = require('powercord/components/settings')
+const { SwatchOption } = require('../constants.js')
 
 module.exports = class Settings extends React.PureComponent {
   state = {
@@ -12,7 +11,6 @@ module.exports = class Settings extends React.PureComponent {
     const {
       getSetting,
       updateSetting,
-      toggleSetting,
       refreshEmbeds,
     } = this.props
 
@@ -26,24 +24,24 @@ module.exports = class Settings extends React.PureComponent {
           }}
           options={[{
             label: 'None',
-            value: 'None',
+            value: SwatchOption.None,
           }, {
             label: 'Vibrant',
-            value: 'Vibrant',
+            value: SwatchOption.Vibrant,
           }, {
-            label: 'DarkVibrant',
-            value: 'DarkVibrant',
+            label: 'Dark Vibrant',
+            value: SwatchOption.DarkVibrant,
           }, {
-            label: 'LightVibrant',
-            value: 'LightVibrant',
+            label: 'Light Vibrant',
+            value: SwatchOption.LightVibrant,
           }, {
-            label: 'DarkMuted',
-            value: 'DarkMuted',
+            label: 'Dark Muted',
+            value: SwatchOption.DarkMuted,
           }, {
-            label: 'LightMuted',
-            value: 'LightMuted',
+            label: 'Light Muted',
+            value: SwatchOption.LightMuted,
           }]}
-          value={getSetting('swatch', 'Vibrant')}
+          value={getSetting('swatch', SwatchOption.Vibrant)}
           searchable={true}
           required={true}
         >

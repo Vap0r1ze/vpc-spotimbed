@@ -7,6 +7,7 @@ let usedCached = false
 module.exports = {
   accessToken: null,
   accessTokenPromise: null,
+  resourcePromises: {},
 
   getAccessToken () {
     if (this.accessTokenPromise) return this.accessTokenPromise
@@ -50,22 +51,35 @@ module.exports = {
           console.error(err.body, request.opts)
           throw err
         }
+      }).then(res => {
+        console.log(res)
+        return res
       })
+  },
+  getResource (resourcePath) {
+    if (this.resourcePromises[resourcePath]) return this.resourcePromises[resourcePath]
+    const resourcePromise = this.genericRequest(
+      get(`${SPOTIFY_BASE_URL}${resourcePath}`)
+    ).then(r => {
+      delete this.resourcePromises[resourcePath]
+      return r.body
+    })
+    this.resourcePromises[resourcePath] = resourcePromise
+    return resourcePromise
   },
 
   getTrack (trackId) {
-    return this.genericRequest(
-      get(`${SPOTIFY_BASE_URL}/tracks/${trackId}`)
-    ).then(r => r.body)
+    return this.getResource(`/tracks/${trackId}`)
   },
   getAlbum (albumId) {
-    return this.genericRequest(
-      get(`${SPOTIFY_BASE_URL}/albums/${albumId}`)
-    ).then(r => r.body)
+    return this.getResource(`/albums/${albumId}`)
   },
-  // getAlbumTracks (albumId, limit = 100, offset = 0) {
-  //   return this._fetchAll(`${SPOTIFY_BASE_URL}/albums/${albumId}/tracks`, limit, offset)
-  // },
+  getArtist (artistId) {
+    return this.getResource(`/artists/${artistId}`)
+  },
+  getArtistTopTracks (artistId, market) {
+    return this.getResource(`/artists/${artistId}/top-tracks?market=${market}`)
+  },
 
   search (query, type = 'track', limit = 20) {
     return this.genericRequest(
