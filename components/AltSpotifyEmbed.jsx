@@ -1,6 +1,7 @@
 const { get } = require('powercord/http')
 const { React } = require('powercord/webpack')
 const { Spinner } = require('powercord/components')
+const ContrastAwareness = require('../vpc-ca/ContrastAwareness.js')
 const Vibrant = require('../vibrant.min.js')
 const {
   formatOrdinal,
@@ -10,7 +11,7 @@ const {
 } = require('../utils.js')
 const { REPO_ISSUES_URL, SwatchOption } = require('../constants.js')
 
-module.exports = class AltSpotifyEmbed extends React.PureComponent {
+module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureComponent {
   state = {
     artData: null,
     fetchingArt: false,
@@ -70,10 +71,12 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       case 'album': {
         return spotifyApi.getAlbum(resourceId).then(resolveResource)
       }
+      case 'playlist': {
+        return spotifyApi.getPlaylist(resourceId).then(resolveResource)
+      }
       case 'artist': {
         return spotifyApi.getArtist(resourceId).then(artist => {
           return spotifyApi.getArtistTopTracks(resourceId, 'US').then(topTracks => {
-            console.log(artist, topTracks)
             return resolveResource({
               ...artist,
               top_tracks: topTracks.tracks,
@@ -136,19 +139,27 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
     )
   }
   renderResourceLink (resourceData, className = '') {
+    let name = resourceData.name
+    let url = resourceData.external_urls?.spotify
+
+    if (resourceData.type === 'user') name = resourceData.display_name
+
     return <a
       className={['vpc-spotimbed-link'].concat(className.split(' ')).join(' ')}
-      href={resourceData.external_urls.spotify}
+      href={url}
       data-resource-link={true}
       target="_blank"
-      title={resourceData.name}
-    >{resourceData.name}</a>
+      title={name}
+    >{name}</a>
   }
-  renderByline (artists) {
+  renderByline (people) {
+    const by = people.length === 1
+      ? this.renderResourceLink(people[0])
+      : this.renderArtists(people)
     return (
       <div className="vpc-spotimbed-infoline">
         <span>by </span>
-        {this.renderArtists(artists)}
+        {by}
       </div>
     )
   }
@@ -189,6 +200,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
             if (i === this.state.selectedTrack) return
             this.setState({ selectedTrack: i })
           }}
+          ref={i === this.state.selectedTrack && this.contrastRef('track-row-active')}
         >
           {columns}
         </div>
@@ -203,13 +215,12 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       embed,
       classNames,
     } = this.props
-    const resourcePath = new URL(embed.url).pathname.split('/')
-    const resourceType = resourcePath[1]
+    const [, resourceType, resourceId] = new URL(embed.url).pathname.split('/')
 
     switch (resourceType) {
       case 'track': {
         this.fetchArt(embed).then(() => this.getSwatches())
-        this.fetchResourceData(resourceType, resourcePath[2])
+        this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
 
@@ -244,7 +255,7 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       }
       case 'album': {
         this.fetchArt(embed).then(() => this.getSwatches())
-        this.fetchResourceData(resourceType, resourcePath[2])
+        this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
 
@@ -257,7 +268,10 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         if (resourceData) {
           let albumType = 'Album'
           if (resourceData.album_type === 'single') {
-            albumType = resourceData.total_tracks > 1 ? 'EP' : 'Single'
+            // https://support.cdbaby.com/hc/en-us/articles/360008275672-What-is-the-difference-between-Single-EP-and-Albums-
+            albumType = resourceData.total_tracks >= 4 ? 'EP' : 'Single'
+          } else if (resourceData.album_type === 'compilation') {
+            albumType = 'Compilation'
           }
 
           const releaseDate = this.formatReleaseDate(resourceData.release_date)
@@ -294,9 +308,9 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
           </div>
         )
       }
-      case 'artist': {
+      case 'playlist': {
         this.fetchArt(embed).then(() => this.getSwatches())
-        this.fetchResourceData(resourceType, resourcePath[2])
+        this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
 
@@ -307,7 +321,54 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
         let previewUrl
 
         if (resourceData) {
+          const secondaryInfo = `${resourceData.followers.total} likes` +
+            ` \u2022 ${resourceData.tracks.total} songs` +
+            `` // TODO: duration
 
+          info = (
+            <div className="vpc-spotimbed-info">
+              <div className="vpc-spotimbed-titleline">
+                {this.renderResourceLink(resourceData, 'vpc-spotimbed-title')}
+                {/* <span className="vpc-spotimbed-title-tag"></span> */}
+              </div>
+              <div className="vpc-spotimbed-infoline-wrap">{this.renderByline([resourceData.owner])}</div>
+              <div className="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">{secondaryInfo}</div>
+            </div>
+          )
+
+          const tracks = resourceData.tracks.items
+            .filter(item => !item.is_local && item.track)
+            .map(item => item.track)
+          trackListItems = this.renderTrackList(tracks)
+          previewUrl = tracks[this.state.selectedTrack]?.preview_url
+        } else {
+          info = this.renderPlaceholderInfo()
+        }
+
+        return (
+          <div className="vpc-spotimbed-embed" style={this.getEmbedStyle()}>
+            <div className="vpc-spotimbed-art-wrap">
+              {art}
+            </div>
+            {info}
+            <div className={`vpc-spotimbed-content vpc-spotimbed-tracklist ${classNames.thin}`}>{trackListItems}</div>
+            <AudioControls mediaHref={previewUrl}/>
+          </div>
+        )
+      }
+      case 'artist': {
+        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchResourceData(resourceType, resourceId)
+
+        const art = this.renderArt()
+
+        const { resourceData } = this.state
+
+        let info
+        let trackListItems
+        let previewUrl
+
+        if (resourceData) {
           info = (
             <div className="vpc-spotimbed-info">
               <div className="vpc-spotimbed-titleline">
@@ -339,4 +400,4 @@ module.exports = class AltSpotifyEmbed extends React.PureComponent {
       }
     }
   }
-}
+})

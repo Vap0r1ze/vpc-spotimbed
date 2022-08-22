@@ -30,6 +30,13 @@
   padding: 20px;
 }
 
+/* descender cut-off fix: https://stackoverflow.com/a/64039674 */
+.vpc-spotimbed-title,
+.vpc-spotimbed-infoline,
+.vpc-spotimbed-infoline-secondary {
+  padding-bottom: 0.14em;
+}
+
 .vpc-spotimbed-info {
   grid-area: info;
   justify-content: space-evenly;
@@ -91,7 +98,7 @@
 
 .vpc-spotimbed-content {
   grid-area: content;
-  background-color: rgba(0, 0, 0, .2);
+  background-color: rgba(0, 0, 0, .12);
 }
 .vpc-spotimbed-content::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);

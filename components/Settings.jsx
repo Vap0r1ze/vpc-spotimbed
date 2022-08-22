@@ -9,6 +9,9 @@ module.exports = class Settings extends React.PureComponent {
 
   render () {
     const {
+      AudioControls,
+      AltSpotifyEmbed,
+      spotifyApi,
       getSetting,
       updateSetting,
       refreshEmbeds,

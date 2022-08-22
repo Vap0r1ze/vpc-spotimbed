@@ -7,14 +7,27 @@ const SpotifyAPI = require('./SpotifyAPI.js')
 const Settings = require('./components/Settings.jsx')
 const AltSpotifyEmbed = require('./components/AltSpotifyEmbed.jsx')
 const AudioControls = require('./components/AudioControls.jsx')
+const Embed = getModuleByDisplayName('Embed', false)
+const classNames = {
+  ...getModule([ 'thin' ], false),
+}
+
 module.exports = class SpotImbed extends Plugin {
-  async startPlugin () {
+  startPlugin () {
     this.loadStylesheet('style.css')
+
+    this.spotifyApi = SpotifyAPI
+
+    this.ConnectedAltSpotifyEmbed = this.settings.connectStore(AltSpotifyEmbed)
+    this.ConnectedAudioControls = this.settings.connectStore(AudioControls)
 
     powercord.api.settings.registerSettings('vpc-spotimbed', {
       category: this.entityID,
       label: 'SpotiMbed',
       render: ({ getSetting, updateSetting, toggleSetting }) => React.createElement(Settings, {
+        AltSpotifyEmbed: this.ConnectedAltSpotifyEmbed,
+        AudioControls: this.ConnectedAudioControls,
+        spotifyApi: this.spotifyApi,
         getSetting,
         updateSetting,
         toggleSetting,
@@ -22,10 +35,6 @@ module.exports = class SpotImbed extends Plugin {
       })
     })
 
-    this.spotifyApi = SpotifyAPI
-
-    this.ConnectedAltSpotifyEmbed = this.settings.connectStore(AltSpotifyEmbed)
-    this.ConnectedAudioControls = this.settings.connectStore(AudioControls)
     this.patchSpotifyEmbed()
   }
 
@@ -35,12 +44,7 @@ module.exports = class SpotImbed extends Plugin {
     this.forceUpdate()
   }
 
-  async patchSpotifyEmbed () {
-    const Embed = await getModuleByDisplayName('Embed')
-    const classNames = {
-      ...await getModule([ 'thin' ]),
-    }
-
+  patchSpotifyEmbed () {
     inject('vpc-spotimbed-embed', Embed.prototype, 'render', (_, res) => {
       if (res.props.embed?.provider?.name === 'Spotify') {
         return React.createElement(this.ConnectedAltSpotifyEmbed, {

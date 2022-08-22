@@ -15,8 +15,9 @@ module.exports = {
       if (!usedCached) {
         const spotifyMdl = await getModule([ 'getActiveSocketAndDevice' ])
         const active = spotifyMdl.getActiveSocketAndDevice()
-        if (active && active.socket && active.socket.accessToken) {
+        if (active?.socket?.accessToken) {
           usedCached = true
+          console.log(active.socket)
           return active.socket.accessToken
         }
       }
@@ -31,8 +32,12 @@ module.exports = {
 
       return spotify.getAccessToken(spotifyUserID)
         .then(r => {
+          console.log(r)
           delete this.accessTokenPromise
           return r.body.access_token
+        }).catch(error => {
+          console.error(error)
+          return new Promise(() => {})
         })
     })()
     return this.accessTokenPromise
@@ -70,6 +75,9 @@ module.exports = {
   },
   getAlbum (albumId) {
     return this.getResource(`/albums/${albumId}`)
+  },
+  getPlaylist (playlistId) {
+    return this.getResource(`/playlists/${playlistId}`)
   },
   getArtist (artistId) {
     return this.getResource(`/artists/${artistId}`)
