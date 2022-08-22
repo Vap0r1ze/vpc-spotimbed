@@ -17,6 +17,7 @@ module.exports = {
         const active = spotifyMdl.getActiveSocketAndDevice()
         if (active?.socket?.accessToken) {
           usedCached = true
+          this.accessTokenPromise = null
           return active.socket.accessToken
         }
       }
@@ -31,7 +32,7 @@ module.exports = {
 
       return spotify.getAccessToken(spotifyUserID)
         .then(r => {
-          delete this.accessTokenPromise
+          this.accessTokenPromise = null
           return r.body.access_token
         }).catch(error => {
           console.error(error)

@@ -329,7 +329,6 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
             <div className="vpc-spotimbed-info">
               <div className="vpc-spotimbed-titleline">
                 {this.renderResourceLink(resourceData, 'vpc-spotimbed-title')}
-                {/* <span className="vpc-spotimbed-title-tag"></span> */}
               </div>
               <div className="vpc-spotimbed-infoline-wrap">{this.renderByline([resourceData.owner])}</div>
               <div className="vpc-spotimbed-infoline vpc-spotimbed-infoline-secondary">{secondaryInfo}</div>
