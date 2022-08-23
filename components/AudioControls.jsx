@@ -3,7 +3,7 @@ const { AsyncComponent } = require('powercord/components')
 
 const ReclassedMediaPlayer = AsyncComponent.from(getModuleByDisplayName('MediaPlayer').then(MediaPlayer => {
   return class ReclassedMediaPlayer extends MediaPlayer {
-    render () {
+    render() {
       return React.cloneElement(super.render(), { className: 'vpc-spotimbed-media-player' })
     }
   }
@@ -17,15 +17,15 @@ module.exports = class AudioControls extends React.PureComponent {
       isMuted: false,
     }
   }
-  onMute (isMuted) {
+  onMute(isMuted) {
     this.setState({ isMuted })
   }
-  onVolumeChange (volume) {
+  onVolumeChange(volume) {
     this.props.updateSetting('volume', volume)
     this.setState({ volume })
   }
 
-  render () {
+  render() {
     const { mediaHref } = this.props
 
     let mediaPlayer

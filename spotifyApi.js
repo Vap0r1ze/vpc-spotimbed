@@ -9,7 +9,7 @@ module.exports = {
   accessTokenPromise: null,
   resourcePromises: {},
 
-  getAccessToken () {
+  getAccessToken() {
     if (this.accessTokenPromise) return this.accessTokenPromise
     this.accessTokenPromise = (async () => {
       if (!usedCached) {
@@ -42,7 +42,7 @@ module.exports = {
     return this.accessTokenPromise
   },
 
-  genericRequest (request) {
+  genericRequest(request) {
     request.set('Authorization', `Bearer ${this.accessToken}`)
     return request
       .catch(async (err) => {
@@ -57,7 +57,7 @@ module.exports = {
         }
       })
   },
-  getResource (resourcePath) {
+  getResource(resourcePath) {
     if (this.resourcePromises[resourcePath]) return this.resourcePromises[resourcePath]
     const resourcePromise = this.genericRequest(
       get(`${SPOTIFY_BASE_URL}${resourcePath}`)
@@ -69,23 +69,23 @@ module.exports = {
     return resourcePromise
   },
 
-  getTrack (trackId) {
+  getTrack(trackId) {
     return this.getResource(`/tracks/${trackId}`)
   },
-  getAlbum (albumId) {
+  getAlbum(albumId) {
     return this.getResource(`/albums/${albumId}`)
   },
-  getPlaylist (playlistId) {
+  getPlaylist(playlistId) {
     return this.getResource(`/playlists/${playlistId}`)
   },
-  getArtist (artistId) {
+  getArtist(artistId) {
     return this.getResource(`/artists/${artistId}`)
   },
-  getArtistTopTracks (artistId, market) {
+  getArtistTopTracks(artistId, market) {
     return this.getResource(`/artists/${artistId}/top-tracks?market=${market}`)
   },
 
-  search (query, type = 'track', limit = 20) {
+  search(query, type = 'track', limit = 20) {
     return this.genericRequest(
       get(`${SPOTIFY_BASE_URL}/search`)
         .query('q', query)
@@ -94,7 +94,7 @@ module.exports = {
     ).then(r => r.body)
   },
 
-  async _fetchAll (url, limit, offset) {
+  async _fetchAll(url, limit, offset) {
     const items = []
     while (url) {
       const req = get(url)

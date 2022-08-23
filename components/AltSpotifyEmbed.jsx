@@ -2,7 +2,7 @@ const { get } = require('powercord/http')
 const { React } = require('powercord/webpack')
 const { Spinner } = require('powercord/components')
 const ContrastAwareness = require('../vpc-ca/ContrastAwareness.js')
-const Vibrant = require('../vibrant.min.js')
+const Vibrant = require('../bundles/vibrant.min.js')
 const {
   formatOrdinal,
   getMonth,
@@ -21,14 +21,14 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     selectedTrack: 0,
   }
 
-  get _fetchedArt () {
+  get _fetchedArt() {
     return this.state.artData
   }
-  get _hasArtData () {
+  get _hasArtData() {
     return this.state.artData && this.state.artData !== 'DEFAULT'
   }
 
-  async getSwatches () {
+  async getSwatches() {
     const { getSetting } = this.props
     if (this.state.accentSwatches) return
     if (!this._hasArtData) return
@@ -38,7 +38,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     this.setState({ accentSwatches: swatches })
   }
 
-  async fetchArt (embed) {
+  async fetchArt(embed) {
     if (this._fetchedArt || this.state.fetchingArt) return
 
     this.setState({ fetchingArt: true })
@@ -57,7 +57,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       })
     })
   }
-  fetchResourceData (resourceType, resourceId) {
+  fetchResourceData(resourceType, resourceId) {
     if (this.state.resourceData != null || this.state.fetchingResource) return
     const { spotifyApi } = this.props
 
@@ -87,7 +87,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     }
   }
 
-  getEmbedStyle () {
+  getEmbedStyle() {
     const { getSetting } = this.props
     let accentBackgroundColor = 'var(--background-secondary)'
     let accentTitleColor = 'var(--text-normal)'
@@ -105,7 +105,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       color: accentBodyColor,
     }
   }
-  formatReleaseDate (dateString) {
+  formatReleaseDate(dateString) {
     const dateParts = dateString.split('-')
     if (!dateParts[1]) return dateParts[0]
 
@@ -116,7 +116,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     return `${getMonth(dateParts[1] - 1)} ${dateParts[0]}`
   }
 
-  renderArt () {
+  renderArt() {
     if (this._hasArtData) {
       return <img draggable="false" className="vpc-spotimbed-art" src={this.state.artData}/>
     } else if (this.state.fetchingArt) {
@@ -129,7 +129,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       return <svg className="vpc-spotimbed-art vpc-spotimbed-art-default" width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><title>Album</title><path d="M26 0.00100708C11.641 0.00100708 0 11.642 0 26.001C0 40.36 11.641 52.001 26 52.001C40.36 52 52 40.36 52 26C52 11.64 40.36 0.00100708 26 0.00100708ZM26 50C12.767 50 2 39.234 2 26C2 12.766 12.767 2.00001 26 2.00001C39.234 2.00001 50 12.766 50 26C50 39.234 39.234 50 26 50ZM26 18C21.582 18 18 21.582 18 26C18 30.418 21.582 34 26 34C30.418 34 34 30.418 34 26C34 21.582 30.419 18 26 18ZM26 32C22.692 32 20 29.309 20 26C20 22.691 22.692 20 26 20C29.308 20 32 22.691 32 26C32 29.309 29.309 32 26 32Z" fill="currentColor" fill-rule="evenodd"></path></svg>
     }
   }
-  renderPlaceholderInfo () {
+  renderPlaceholderInfo() {
     return (
       <div className="vpc-spotimbed-info">
         <div><span className="vpc-spotimbed-placeholder">movies for guys</span></div>
@@ -138,7 +138,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       </div>
     )
   }
-  renderResourceLink (resourceData, className = '') {
+  renderResourceLink(resourceData, className = '') {
     let name = resourceData.name
     let url = resourceData.external_urls?.spotify
 
@@ -152,7 +152,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       title={name}
     >{name}</a>
   }
-  renderByline (people) {
+  renderByline(people) {
     const by = people.length === 1
       ? this.renderResourceLink(people[0])
       : this.renderArtists(people)
@@ -163,7 +163,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       </div>
     )
   }
-  renderArtists (artists) {
+  renderArtists(artists) {
     const artistNames = artists.map(artist => artist.name).join(', ')
     const artistLinks = artists.map(artist => (
       <a
@@ -174,7 +174,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     )).reduce((a, b) => [a, ', ', b])
     return <span title={artistNames}>{artistLinks}</span>
   }
-  renderTrackRowInfo (track) {
+  renderTrackRowInfo(track) {
     return (
       <div className="vpc-spotimbed-trackrow-info">
         {this.renderResourceLink(track, 'vpc-spotimbed-trackrow-title')}
@@ -182,7 +182,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       </div>
     )
   }
-  renderTrackList (tracks) {
+  renderTrackList(tracks) {
     const tracklistItems = []
 
     for (let i = 0; i < tracks.length; i++) {
@@ -209,7 +209,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
 
     return tracklistItems
   }
-  render () {
+  render() {
     const {
       AudioControls,
       embed,
