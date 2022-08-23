@@ -220,7 +220,6 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
       art: artUrl,
       type: resourceType,
       id: resourceId,
-      classNames,
     } = this.props
 
     switch (resourceType) {
