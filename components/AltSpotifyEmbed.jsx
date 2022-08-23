@@ -1,5 +1,5 @@
 const { get } = require('powercord/http')
-const { React } = require('powercord/webpack')
+const { React, getModule } = require('powercord/webpack')
 const { Spinner } = require('powercord/components')
 const ContrastAwareness = require('../vpc-ca/ContrastAwareness.js')
 const Vibrant = require('../bundles/vibrant.min.js')
@@ -10,6 +10,11 @@ const {
   toClassName,
 } = require('../utils.js')
 const { REPO_ISSUES_URL, SwatchOption } = require('../constants.js')
+
+
+const classNames = {
+  ...getModule([ 'thin' ], false),
+}
 
 module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureComponent {
   state = {
@@ -38,11 +43,11 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     this.setState({ accentSwatches: swatches })
   }
 
-  async fetchArt(embed) {
+  async fetchArt(artUrl) {
     if (this._fetchedArt || this.state.fetchingArt) return
 
     this.setState({ fetchingArt: true })
-    return get(embed.thumbnail.url).then(res => {
+    return get(artUrl).then(res => {
       if (res.ok) {
         return `data:${res.headers['content-type']};base64,${res.raw.base64Slice()}`
       }
@@ -212,14 +217,15 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
   render() {
     const {
       AudioControls,
-      embed,
+      art: artUrl,
+      type: resourceType,
+      id: resourceId,
       classNames,
     } = this.props
-    const [, resourceType, resourceId] = new URL(embed.url).pathname.split('/')
 
     switch (resourceType) {
       case 'track': {
-        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchArt(artUrl).then(() => this.getSwatches())
         this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
@@ -254,7 +260,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
         )
       }
       case 'album': {
-        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchArt(artUrl).then(() => this.getSwatches())
         this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
@@ -309,7 +315,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
         )
       }
       case 'playlist': {
-        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchArt(artUrl).then(() => this.getSwatches())
         this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()
@@ -356,7 +362,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
         )
       }
       case 'artist': {
-        this.fetchArt(embed).then(() => this.getSwatches())
+        this.fetchArt(artUrl).then(() => this.getSwatches())
         this.fetchResourceData(resourceType, resourceId)
 
         const art = this.renderArt()

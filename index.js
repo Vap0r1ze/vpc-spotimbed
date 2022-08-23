@@ -9,10 +9,6 @@ const AltSpotifyEmbed = require('./components/AltSpotifyEmbed.jsx')
 const AudioControls = require('./components/AudioControls.jsx')
 const Embed = getModuleByDisplayName('Embed', false)
 
-const classNames = {
-  ...getModule([ 'thin' ], false),
-}
-
 module.exports = class SpotImbed extends Plugin {
   startPlugin() {
     this.loadStylesheet('style.css')
@@ -24,9 +20,6 @@ module.exports = class SpotImbed extends Plugin {
       category: this.entityID,
       label: 'SpotiMbed',
       render: ({ getSetting, updateSetting, toggleSetting }) => React.createElement(Settings, {
-        AltSpotifyEmbed: this.ConnectedAltSpotifyEmbed,
-        AudioControls: this.ConnectedAudioControls,
-        spotifyApi,
         getSetting,
         updateSetting,
         toggleSetting,
@@ -45,12 +38,16 @@ module.exports = class SpotImbed extends Plugin {
 
   patchSpotifyEmbed() {
     inject('vpc-spotimbed-embed', Embed.prototype, 'render', (_, res) => {
-      if (res.props.embed?.provider?.name === 'Spotify') {
+      const { embed } = res.props
+      if (embed?.provider?.name === 'Spotify') {
+        const [, resourceType, resourceId] = new URL(embed.url).pathname.split('/')
+
         return React.createElement(this.ConnectedAltSpotifyEmbed, {
-          embed: res.props.embed,
+          art: embed.thumbnail.url,
+          id: resourceId,
+          type: resourceType,
           spotifyApi,
           AudioControls: this.ConnectedAudioControls,
-          classNames,
         })
       } else {
         return res

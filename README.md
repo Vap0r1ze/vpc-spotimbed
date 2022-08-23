@@ -1,9 +1,5 @@
-# SpotiMbed (WIP)
-A powercord plugin for making Spotify embeds actually useable
+# SpotiMbed
+A [replugged](https://github.com/replugged-org/replugged) plugin for making Spotify embeds actually useable
 
-### TODO (in order of importance)
-- Option to use discord's builtin palette generator
-- Cache resources w/ lifetime
-
-### Showcase
+### Preview
 ![Track Embed](https://i.imgur.com/zDPB8aL.png)
