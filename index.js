@@ -23,7 +23,6 @@ module.exports = class SpotImbed extends Plugin {
         getSetting,
         updateSetting,
         toggleSetting,
-        refreshEmbeds: () => this.forceUpdate(),
       })
     })
 
@@ -33,7 +32,6 @@ module.exports = class SpotImbed extends Plugin {
   pluginWillUnload() {
     uninject('vpc-spotimbed-embed')
     powercord.api.settings.unregisterSettings('vpc-spotimbed')
-    this.forceUpdate()
   }
 
   patchSpotifyEmbed() {
@@ -53,11 +51,5 @@ module.exports = class SpotImbed extends Plugin {
         return res
       }
     })
-
-    this.forceUpdate()
-  }
-
-  forceUpdate() {
-    document.querySelectorAll('[id^="chat-messages-"]').forEach(e => getReactInstance(e)?.memoizedProps?.onMouseMove?.())
   }
 }
