@@ -40,7 +40,7 @@ module.exports = class Settings extends React.PureComponent {
           label: 'Light Muted',
           value: SwatchOption.LightMuted,
         }]}
-        value={getSetting('swatch', SwatchOption.Vibrant)}
+        value={getSetting('swatch', SwatchOption.DarkVibrant)}
         searchable={true}
         required={true}
       >

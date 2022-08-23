@@ -37,7 +37,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     const { getSetting } = this.props
     if (this.state.accentSwatches) return
     if (!this._hasArtData) return
-    if (getSetting('swatch', SwatchOption.Vibrant) === 'None') return
+    if (getSetting('swatch', SwatchOption.DarkVibrant) === 'None') return
 
     const swatches = await Vibrant.from(this.state.artData).getSwatches()
     this.setState({ accentSwatches: swatches })
@@ -97,7 +97,7 @@ module.exports = ContrastAwareness(class AltSpotifyEmbed extends React.PureCompo
     let accentBackgroundColor = 'var(--background-secondary)'
     let accentTitleColor = 'var(--text-normal)'
     let accentBodyColor = 'var(--text-normal)'
-    const swatchName = getSetting('swatch', SwatchOption.Vibrant)
+    const swatchName = getSetting('swatch', SwatchOption.DarkVibrant)
     if (this.state.accentSwatches && swatchName !== 'None') {
       const swatch = this.state.accentSwatches[swatchName]
       accentBackgroundColor = swatch.hex
