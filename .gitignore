@@ -1,2 +1,2 @@
-tempFiles
-shiki-src
+/node_modules
+/index.js

@@ -2,7 +2,7 @@ const { get } = require('powercord/http')
 const { React, getModule } = require('powercord/webpack')
 const { Spinner } = require('powercord/components')
 const ContrastAwareness = require('../vpc-ca/ContrastAwareness.js')
-const Vibrant = require('../bundles/vibrant.min.js')
+const Vibrant = require('../../bundles/vibrant.min.js')
 const {
   formatOrdinal,
   getMonth,

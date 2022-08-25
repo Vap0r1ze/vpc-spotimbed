@@ -1,0 +1,23 @@
+{
+  "name": "vpc-spotimbed",
+  "version": "1.0.0",
+  "description": "A [replugged](https://github.com/replugged-org/replugged) plugin for making Spotify embeds actually useable",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vap0r1ze/vpc-spotimbed.git"
+  },
+  "keywords": [],
+  "author": "Vap0r1ze",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vap0r1ze/vpc-spotimbed/issues"
+  },
+  "homepage": "https://github.com/Vap0r1ze/vpc-spotimbed#readme",
+  "devDependencies": {
+    "esbuild": "^0.15.5"
+  }
+}
